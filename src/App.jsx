@@ -3,18 +3,20 @@ import Board from "./Components/Board";
 import History from "./Components/History";
 import { calculateWinner } from "./helpers";
 import Statusmessage from "./Components/Statusmessage";
-
 import "./Styles/root.scss"; 
+
+const NEW_GAME = [
+   {board: Array(9).fill(null), isXNext : true},
+];
 
  export default () => {
 
-  const [history, setHistory] = useState([ {board: Array(9).fill(null), isXNext : true},
-  ]);
+  const [history, setHistory] = useState(NEW_GAME);
   const [curentMove, setCurrentmove] = useState(0);
 
   const current = history[curentMove];
   
-  const winner = calculateWinner(current.board);
+  const { winner, winningSquares } = calculateWinner(current.board);
 
     const handleSquareClick = position => {
       if (current.board[position] || winner){
@@ -39,7 +41,10 @@ import "./Styles/root.scss";
 
     const moveTo = (move) => {
      setCurrentmove(move);
-
+    };
+    const onNewgame = () => {
+      setHistory(NEW_GAME);
+      setCurrentmove(0);
     };
 
     return(
@@ -47,7 +52,8 @@ import "./Styles/root.scss";
   <div className="app" >
     <h1>TIC TAC TOE!</h1>
     <Statusmessage winner={winner} current={current} />
-    <Board board={current.board} handleSquareClick = {handleSquareClick}/>
+    <Board board={current.board} handleSquareClick = {handleSquareClick} winningSquares = {winningSquares}/>
+    <button type="button" onClick={onNewgame}>Start New game</button>
     <History history={history} moveTo={moveTo} currentMove={curentMove}/>
   </div>
   );
